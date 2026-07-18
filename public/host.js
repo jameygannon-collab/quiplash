@@ -67,7 +67,7 @@ function renderLobby() {
     </div>
 
     <div class="chips">
-      ${players.map(chip).join('') || `<span class="muted">${esc(c.waitingForPlayers)}</span>`}
+      ${players.map((p) => chip(p, cfg.enableBots && p.isBot)).join('') || `<span class="muted">${esc(c.waitingForPlayers)}</span>`}
     </div>
 
     <div class="stack" style="margin-top:6px">
@@ -75,16 +75,24 @@ function renderLobby() {
         ${state.packs.map((p) => `<option value="${p.id}" ${p.id === state.activePackId ? 'selected' : ''}>${esc(p.name)}</option>`).join('')}
       </select>
       <button id="start" class="btn big" ${state.canStart ? '' : 'disabled'}>${esc(c.startButton)}</button>
+      ${cfg.enableBots ? `<button id="addbot" class="btn ghost">+ add test bot</button>` : ''}
       <div class="muted">${needMore ? esc(fill(c.needMore, { n: state.minPlayers })) : esc(c.readyToStart)}</div>
     </div>
   `;
   document.getElementById('start').onclick = () => net.send({ t: 'start' });
   document.getElementById('pack').onchange = (e) => net.send({ t: 'set_pack', packId: e.target.value });
+  const addbot = document.getElementById('addbot');
+  if (addbot) addbot.onclick = () => net.send({ t: 'add_bot' });
+  app.querySelectorAll('.chipx').forEach((b) => {
+    b.onclick = () => net.send({ t: 'remove_bot', playerId: b.dataset.id });
+  });
 }
 
-function chip(p) {
+function chip(p, removable = false) {
+  const tag = p.isBot ? `<span class="botflag">BOT</span>` : '';
+  const x = removable ? `<button class="chipx" data-id="${esc(p.id)}" title="remove bot">✕</button>` : '';
   return `<span class="chip ${p.connected ? '' : 'off'}">
-    <span class="dot" style="background:${p.color}"></span>${esc(p.name)}</span>`;
+    <span class="dot" style="background:${p.color}"></span>${esc(p.name)}${tag}${x}</span>`;
 }
 
 function renderWriting() {
@@ -168,7 +176,7 @@ function renderFinal() {
     : fill(c.winner, { name: names || '—' });
   app.innerHTML = `
     <div class="pill">${esc(c.header)}</div>
-    <div class="logo" style="font-size:clamp(40px,9vw,110px)">${esc(headline)}</div>
+    <div class="logo" style="font-size:clamp(26px,6vw,72px)">${esc(headline)}</div>
     ${rowsHtml(state.standings)}
     <button id="again" class="btn big" style="margin-top:14px">${esc(c.playAgainButton)}</button>
     <div class="muted">${esc(c.thanks)}</div>

@@ -3,8 +3,8 @@
   "configurations": [
     {
       "name": "quiplash",
-      "runtimeExecutable": "node",
-      "runtimeArgs": ["server/index.js"],
+      "runtimeExecutable": "sh",
+      "runtimeArgs": ["-c", "ENABLE_BOTS=1 node server/index.js"],
       "port": 3000,
       "cwd": "/Users/macbook16in/Desktop/quiplash"
     }

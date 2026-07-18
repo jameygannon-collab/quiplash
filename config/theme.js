@@ -11,33 +11,35 @@
 
 export const theme = {
   // --- Identity ------------------------------------------------------------
-  logoText: 'QUIPLASH',        // big wordmark on the host lobby screen
-  tagline: 'answer. vote. win.', // small line under the logo
+  logoText: 'QUIPLASH',            // big wordmark on the host lobby screen
+  tagline: 'the truth is in the votes', // small line under the logo
 
   // --- Colors --------------------------------------------------------------
-  brand: '#EB1000',            // primary accent — buttons, highlights, timer
-  brandInk: '#ffffff',         // text/icon color that sits ON the brand color
-  bg: '#0b0b12',               // page background (deep near-black)
-  bgPanel: '#16161f',          // cards / panels sitting on the background
-  ink: '#f4f4f8',              // main text color
-  inkMuted: '#9a9ab0',         // secondary/label text
-  good: '#33d17a',             // "you're in" / success states
-  warn: '#ffb000',             // low-timer / caution states
+  //  "Conspiracy corkboard": manila paper, typewriter ink, dried-red stamp.
+  brand: '#B0160B',            // primary accent — stamped red (dial to #EB1000 for hotter)
+  brandInk: '#f4ecd8',         // paper color that sits ON the red
+  bg: '#e4dcc4',               // page background (manila / aged paper)
+  bgPanel: '#efe8d4',          // cards / panels — a slightly lighter paper
+  ink: '#1c1710',              // main text color (near-black typewriter ink)
+  inkMuted: '#726a54',         // secondary/label text (faded pencil)
+  good: '#3f6b34',             // "you're in" / success (stamp green)
+  warn: '#9a5a00',             // low-timer / caution (aged amber)
 
   // A pool of colors auto-assigned to players (one each, in order).
-  // Add more if you raise rules.maxPlayers past this list's length —
-  // it wraps around safely, but unique colors read best.
+  // Muted ink/stamp tones so chips read on the light paper background.
   playerColors: [
-    '#EB1000', '#2d7dff', '#33d17a', '#ffb000',
-    '#a15bff', '#ff5ba1', '#00c2c7', '#ff7a29',
+    '#B0160B', '#2f4a6b', '#3f6b34', '#9a5a00',
+    '#5a3a6b', '#8a3a5a', '#2a5f62', '#a5502a',
   ],
 
   // --- Type ----------------------------------------------------------------
-  // Any font stack you like. To use a hosted webfont, add its <link> in
-  // public/host.html + public/player.html and name it here.
-  fontDisplay: '"Georgia", "Times New Roman", serif',   // big headings / logo
-  fontBody: 'system-ui, -apple-system, "Segoe UI", Roboto, sans-serif',
+  // Typewriter / redacted-document feel. The woff2 files are self-hosted in
+  // public/fonts and declared via @font-face at the top of public/app.css —
+  // no external font request. Name the families here; the stacks fall back to
+  // the system monospace if a file ever fails to load.
+  fontDisplay: '"Special Elite", "Courier New", ui-monospace, monospace', // headings / logo
+  fontBody: '"Courier Prime", ui-monospace, "Courier New", monospace',    // everything else
 
   // --- Shape ---------------------------------------------------------------
-  radius: '16px',              // corner rounding on cards + buttons
+  radius: '2px',               // near-sharp corners — paper edges, not glossy pills
 };

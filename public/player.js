@@ -77,7 +77,7 @@ function renderJoin() {
   const c = cfg.copy.join;
   app.innerHTML = `
     <div class="stack" style="width:min(360px,92vw)">
-      <div class="logo" style="font-size:clamp(36px,14vw,72px)">${esc(cfg.theme.logoText)}</div>
+      <div class="logo" style="font-size:clamp(28px,11vw,56px)">${esc(cfg.theme.logoText)}</div>
       <div class="pill">${esc(c.title)}</div>
       <input id="code" class="field code" maxlength="6" placeholder="${esc(c.codePlaceholder)}" value="${esc(prefillCode)}" />
       <input id="name" class="field" maxlength="20" placeholder="${esc(c.namePlaceholder)}" />
@@ -143,7 +143,7 @@ function renderWriting() {
     <div class="stack" style="width:min(460px,94vw)">
       ${youBadge()}
       <div class="pill">${esc(label)}</div>
-      <div class="prompt-text display" style="font-size:clamp(22px,7vw,34px)">${esc(pending.text)}</div>
+      <div class="prompt-text display" style="font-size:clamp(20px,6vw,30px)">${esc(pending.text)}</div>
       ${timerHtml()}
       <input id="ans" class="field" maxlength="120" placeholder="${esc(c.answerPlaceholder)}" value="${esc(draft)}" />
       <button id="submit" class="btn big block">${esc(c.submitButton)}</button>
@@ -175,7 +175,7 @@ function renderVoting() {
     <div class="stack" style="width:min(460px,94vw)">
       ${youBadge()}
       <div class="pill">${esc(c.voteInstruction)}</div>
-      <div class="prompt-text display" style="font-size:clamp(20px,6vw,30px)">${esc(v.promptText)}</div>
+      <div class="prompt-text display" style="font-size:clamp(18px,5.5vw,28px)">${esc(v.promptText)}</div>
       ${timerHtml()}
       <div class="stack" style="width:100%">
         ${v.options.map((o) => `<button class="option" data-choice="${o.choice}">${esc(o.text)}</button>`).join('')}

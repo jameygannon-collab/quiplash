@@ -12,6 +12,8 @@ export const C2S = {
   JOIN: 'join',               // a phone joins a room               { code, name }
   REJOIN: 'rejoin',           // reconnect after a drop             { code, playerId }
   SET_PACK: 'set_pack',       // host changes the prompt pack       { packId }
+  ADD_BOT: 'add_bot',         // host adds a test bot player (needs ENABLE_BOTS)
+  REMOVE_BOT: 'remove_bot',   // host removes a test bot            { playerId }
   START: 'start',             // host starts the game
   ANSWER: 'answer',           // player submits an answer           { promptId, text }
   VOTE: 'vote',               // player votes in a matchup          { promptId, choice }

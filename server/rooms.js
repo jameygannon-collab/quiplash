@@ -11,9 +11,10 @@
 // ============================================================================
 
 import { rules } from '../config/rules.js';
-import { getPack, defaultPackId, packs } from '../config/prompts.js';
+import { getPack, getDefaultPackId, getPacks } from '../config/prompts.js';
 import { copy } from '../config/copy.js';
 import { theme } from '../config/theme.js';
+import { metrics } from './metrics.js';
 import { PHASE, S2C } from './protocol.js';
 import {
   assignPrompts, scorePrompt, standings, winners, shuffle, pick, hasRealAnswer,
@@ -21,6 +22,12 @@ import {
 
 const MAX_NAME = 20;
 const MAX_ANSWER = 120;
+
+// Names for test bots (feature: solo testing). Picked in order, uniqueness-checked.
+const BOT_NAMES = [
+  'Botniss', 'Clanker', 'HAL', 'Roboto', 'Cog', 'Nutbolt',
+  'Tinny', 'Gizmo', 'Circuit', 'Sparky', 'Widget', 'Dot',
+];
 
 // ---------------------------------------------------------------------------
 //  Room
@@ -34,7 +41,7 @@ export class Room {
     this.hostWs = null;
     this.qr = null;              // data-URL QR of joinUrl (set by the server)
     this.players = new Map();    // playerId → player object
-    this.packId = defaultPackId;
+    this.packId = getDefaultPackId();
     this.phase = PHASE.LOBBY;
 
     this.game = null;            // per-game state, built in start()
@@ -96,6 +103,42 @@ export class Room {
     return { playerId, name: p.name };
   }
 
+  // ---- test bots ----------------------------------------------------------
+  //  A bot is an ordinary player with no websocket (ws:null) that the room
+  //  answers/votes on behalf of. It lets one real person test a full game.
+  //  Gated by ENABLE_BOTS in index.js — never reachable in a normal deploy.
+
+  addBot() {
+    if (this.phase !== PHASE.LOBBY) return;
+    if (this.activePlayers().length >= rules.maxPlayers) return;
+    const used = new Set([...this.players.values()].map((p) => p.name.toLowerCase()));
+    const name = BOT_NAMES.find((n) => !used.has(n.toLowerCase()))
+      || `Bot ${this.players.size + 1}`;
+    const id = `u${++this._pidSeq}`;
+    const colorIndex = this.players.size;
+    this.players.set(id, {
+      id,
+      name,
+      score: 0,
+      color: theme.playerColors[colorIndex % theme.playerColors.length],
+      colorIndex,
+      ws: null,
+      connected: true,
+      isBot: true,
+    });
+    this.disarmIdleCleanup();
+    this.broadcast();
+  }
+
+  removeBot(playerId) {
+    if (this.phase !== PHASE.LOBBY) return;
+    const p = this.players.get(playerId);
+    if (p && p.isBot) {
+      this.players.delete(playerId);
+      this.broadcast();
+    }
+  }
+
   // A websocket dropped — figure out who it was and mark them offline.
   connectionClosed(ws) {
     if (ws === this.hostWs) {
@@ -123,7 +166,7 @@ export class Room {
 
   setPack(packId) {
     if (this.phase !== PHASE.LOBBY) return;
-    if (packs.some((p) => p.id === packId)) {
+    if (getPacks().some((p) => p.id === packId)) {
       this.packId = packId;
       this.broadcast();
     }
@@ -135,9 +178,45 @@ export class Room {
 
   start() {
     if (!this.canStart()) return;
+    metrics.gamesStarted += 1;
     for (const p of this.players.values()) p.score = 0;
     this.game = { roundIndex: -1, prompts: [], order: [], votingIndex: 0 };
     this.beginRound();
+  }
+
+  // ---- bot automation -----------------------------------------------------
+
+  hasBots() {
+    return [...this.players.values()].some((p) => p.isBot);
+  }
+
+  // Bots submit their answers for the current round. Real answerers are left
+  // untouched, so a solo human still has to write theirs before writing ends.
+  botsWrite() {
+    if (!this.game) return;
+    for (const prompt of this.game.prompts) {
+      for (const id of prompt.answerers) {
+        const p = this.players.get(id);
+        if (p && p.isBot && !hasRealAnswer(prompt.answers[id])) {
+          this.submitAnswer(id, prompt.id, pick(copy.botAnswers));
+        }
+      }
+    }
+  }
+
+  // Bots cast a random legal vote on the current matchup (a bot never votes on
+  // a prompt it authored). If a bot is the only eligible voter, this resolves
+  // the matchup immediately — exactly what you want when testing alone.
+  botsVote() {
+    if (this.phase !== PHASE.VOTING || !this.game) return;
+    const prompt = this.currentPrompt();
+    if (!prompt) return;
+    for (const id of this.eligibleVoters(prompt)) {
+      const p = this.players.get(id);
+      if (p && p.isBot && !prompt.votes[id]) {
+        this.vote(id, prompt.id, pick(prompt.answerers));
+      }
+    }
   }
 
   // ---- round: writing -----------------------------------------------------
@@ -161,6 +240,7 @@ export class Room {
     this.phase = PHASE.WRITING;
     this.startTimer(rules.answerSeconds, () => this.finishWriting());
     this.broadcast();
+    this.botsWrite();   // bots answer immediately; humans still have the timer
   }
 
   submitAnswer(playerId, promptId, text) {
@@ -169,6 +249,7 @@ export class Room {
     if (!prompt || !prompt.answerers.includes(playerId)) return;
     if (hasRealAnswer(prompt.answers[playerId])) return; // already answered
     prompt.answers[playerId] = String(text || '').trim().slice(0, MAX_ANSWER);
+    metrics.answersSubmitted += 1;
 
     if (this.allAnswersIn()) this.finishWriting();
     else this.broadcast();
@@ -219,6 +300,7 @@ export class Room {
     }
     this.startTimer(rules.voteSeconds, () => this.finishVoting());
     this.broadcast();
+    this.botsVote();   // bot voters decide right away; humans still have the timer
   }
 
   vote(playerId, promptId, choice) {
@@ -229,6 +311,7 @@ export class Room {
     if (!prompt.answerers.includes(choice)) return;         // must pick a real option
     if (prompt.votes[playerId]) return;                     // already voted
     prompt.votes[playerId] = choice;
+    metrics.votesCast += 1;
 
     if (this.allVotesIn(prompt)) this.finishVoting();
     else this.broadcast();
@@ -366,7 +449,8 @@ export class Room {
 
   publicPlayers() {
     return this.activePlayers().map((p) => ({
-      id: p.id, name: p.name, score: p.score, color: p.color, connected: p.connected,
+      id: p.id, name: p.name, score: p.score, color: p.color,
+      connected: p.connected, isBot: !!p.isBot,
     }));
   }
 
@@ -391,7 +475,7 @@ export class Room {
           ...base,
           joinUrl: this.joinUrl,
           qr: this.qr,
-          packs: packs.map((p) => ({ id: p.id, name: p.name })),
+          packs: getPacks().map((p) => ({ id: p.id, name: p.name })),
           activePackId: this.packId,
           canStart: this.canStart(),
           minPlayers: rules.minPlayers,
@@ -552,6 +636,7 @@ export class RoomManager {
     const joinUrl = `${baseUrl}/play?code=${code}`;
     const room = new Room(code, joinUrl, (c) => this.rooms.delete(c));
     this.rooms.set(code, room);
+    metrics.roomsCreated += 1;
     return room;
   }
 

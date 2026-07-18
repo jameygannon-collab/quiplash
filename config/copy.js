@@ -100,6 +100,30 @@ export const copy = {
     'ask my lawyer',
   ],
 
+  // --- Bot answers ---------------------------------------------------------
+  // What test "bot" players submit when ENABLE_BOTS is on. Kept generically
+  // funny so they read fine against any prompt while you're testing solo.
+  botAnswers: [
+    'trust me, i went to clown college',
+    'the government does not want you to know this',
+    'a horse. the answer is always a horse',
+    'i plead the fifth',
+    'my therapist and i are still working on it',
+    'ethically? no. legally? also no',
+    'depends who is asking',
+    'this is why i was banned from the group chat',
+    'my mother warned me about days like this',
+    'ah yes, the forbidden option',
+    'i have a PowerPoint prepared for exactly this',
+    'live, laugh, commit crimes',
+    'the vibes were simply off',
+    'i learned this on the streets. of minecraft',
+    'no notes. perfect. flawless. chaos',
+    'somewhere, a pigeon is very proud of me',
+    'i regret nothing and everything',
+    'this incident will not be added to my permanent record',
+  ],
+
   // --- Generic / system ----------------------------------------------------
   system: {
     connecting: 'Connecting…',

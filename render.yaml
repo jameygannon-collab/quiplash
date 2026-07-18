@@ -13,4 +13,10 @@ services:
     startCommand: node server/index.js
     envVars:
       - key: BASE_URL
-        sync: false   # set this to your live URL in the Render dashboard
+        sync: false   # your live https URL, e.g. https://quiplash-c4ii.onrender.com
+      - key: ADMIN_PASSWORD
+        sync: false   # password for the /admin console (unset = admin disabled)
+      - key: GITHUB_TOKEN
+        sync: false   # fine-grained PAT, Contents:read+write on this repo only
+      - key: ENABLE_BOTS
+        sync: false   # set to 1 to show the "add test bot" button; leave unset for guests
