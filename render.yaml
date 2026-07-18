@@ -1,0 +1,16 @@
+# One-click deploy config for Render (render.com).
+# Render holds websocket connections open, which Vercel's serverless functions
+# can't — that's why this ships here instead of Vercel.
+#
+# After deploying, set BASE_URL in the dashboard to your live https URL
+# (e.g. https://quiplash.onrender.com) so the join QR points to the right place.
+services:
+  - type: web
+    name: quiplash
+    runtime: node
+    plan: free
+    buildCommand: npm install
+    startCommand: node server/index.js
+    envVars:
+      - key: BASE_URL
+        sync: false   # set this to your live URL in the Render dashboard

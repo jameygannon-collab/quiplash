@@ -1,0 +1,12 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "quiplash",
+      "runtimeExecutable": "node",
+      "runtimeArgs": ["server/index.js"],
+      "port": 3000,
+      "cwd": "/Users/macbook16in/Desktop/quiplash"
+    }
+  ]
+}

@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Quiplash</title>
+  <link rel="stylesheet" href="/app.css" />
+</head>
+<body>
+  <div class="screen">
+    <div class="stack">
+      <div class="logo" id="logo">QUIPLASH</div>
+      <div class="tagline" id="tagline"></div>
+    </div>
+    <div class="stack" style="margin-top:20px; width:min(360px,90vw)">
+      <a class="btn big block" href="/host">Host a game</a>
+      <a class="btn big block ghost" href="/play">Join on this phone</a>
+    </div>
+    <p class="muted" style="max-width:420px; margin-top:10px">
+      Host on the big screen. Everyone else joins from their phone with the room code.
+    </p>
+  </div>
+
+  <script type="module">
+    import { loadConfig, applyTheme } from '/client.js';
+    const cfg = await loadConfig();
+    applyTheme(cfg.theme);
+    document.getElementById('logo').textContent = cfg.theme.logoText;
+    document.getElementById('tagline').textContent = cfg.theme.tagline;
+    document.title = cfg.theme.logoText;
+  </script>
+</body>
+</html>
