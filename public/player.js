@@ -83,6 +83,7 @@ function renderJoin() {
       <input id="name" class="field" maxlength="20" placeholder="${esc(c.namePlaceholder)}" />
       <button id="join" class="btn big block">${esc(c.joinButton)}</button>
       ${lastError ? `<div style="color:var(--warn)">${esc(lastError)}</div>` : ''}
+      <div class="muted" style="font-size:13px;margin-top:2px">the game plays on the big screen — your phone is just the controller</div>
     </div>
   `;
   const codeEl = document.getElementById('code');

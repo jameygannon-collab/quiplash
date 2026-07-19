@@ -36,10 +36,12 @@ const PORT = process.env.PORT || 3000;
 const BASE_URL = process.env.BASE_URL || `http://${lanIp()}:${PORT}`;
 
 // Feature flags / secrets (all optional; set as env vars).
-//  ENABLE_BOTS=1   → show the host lobby "Add bot" button (solo testing)
+//  ENABLE_BOTS=0   → hide the big-screen "add CPU player" control (default: shown).
+//                    The control only ever appears on the host screen, never on a
+//                    player's phone, so it can't affect the guest experience.
 //  ADMIN_PASSWORD  → password for the /admin console (unset = admin disabled)
 //  GITHUB_TOKEN    → lets the admin console commit pack edits back to the repo
-const ENABLE_BOTS = process.env.ENABLE_BOTS === '1';
+const ENABLE_BOTS = process.env.ENABLE_BOTS !== '0';
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || '';
 // Secret used to sign admin session cookies. Derived from the password so it's
 // stable across restarts (admin stays logged in through a redeploy).
@@ -372,6 +374,6 @@ server.listen(PORT, () => {
   console.log(`  Host screen:  http://localhost:${PORT}/host`);
   console.log(`  Phones join:  ${BASE_URL}/play`);
   console.log(`  Admin:        ${ADMIN_PASSWORD ? `http://localhost:${PORT}/admin` : 'disabled (set ADMIN_PASSWORD)'}`);
-  console.log(`  Test bots:    ${ENABLE_BOTS ? 'on (Add bot button in lobby)' : 'off (set ENABLE_BOTS=1)'}`);
+  console.log(`  CPU players:  ${ENABLE_BOTS ? 'on (add-CPU control on big screen)' : 'off (ENABLE_BOTS=0)'}`);
   console.log(`  (set BASE_URL env var when you deploy)\n`);
 });

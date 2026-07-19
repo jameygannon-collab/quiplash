@@ -55,6 +55,7 @@ function renderLobby() {
     <div class="stack">
       <div class="logo">${esc(cfg.theme.logoText)}</div>
       <div class="tagline">${esc(cfg.theme.tagline)}</div>
+      <div class="muted" style="font-size:13px;letter-spacing:.04em">▶ this is the big screen — keep it up where everyone can see</div>
     </div>
     <div class="panel stack" style="margin-top:8px">
       <div class="pill">${esc(c.joinInstruction)}</div>
@@ -75,7 +76,7 @@ function renderLobby() {
         ${state.packs.map((p) => `<option value="${p.id}" ${p.id === state.activePackId ? 'selected' : ''}>${esc(p.name)}</option>`).join('')}
       </select>
       <button id="start" class="btn big" ${state.canStart ? '' : 'disabled'}>${esc(c.startButton)}</button>
-      ${cfg.enableBots ? `<button id="addbot" class="btn ghost">+ add test bot</button>` : ''}
+      ${cfg.enableBots ? `<button id="addbot" class="btn ghost">+ add CPU player</button>` : ''}
       <div class="muted">${needMore ? esc(fill(c.needMore, { n: state.minPlayers })) : esc(c.readyToStart)}</div>
     </div>
   `;
@@ -89,7 +90,7 @@ function renderLobby() {
 }
 
 function chip(p, removable = false) {
-  const tag = p.isBot ? `<span class="botflag">BOT</span>` : '';
+  const tag = p.isBot ? `<span class="botflag">CPU</span>` : '';
   const x = removable ? `<button class="chipx" data-id="${esc(p.id)}" title="remove bot">✕</button>` : '';
   return `<span class="chip ${p.connected ? '' : 'off'}">
     <span class="dot" style="background:${p.color}"></span>${esc(p.name)}${tag}${x}</span>`;
