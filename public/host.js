@@ -51,6 +51,9 @@ function renderLobby() {
   const c = cfg.copy.lobby;
   const players = state.players;
   const needMore = players.length < state.minPlayers;
+  // With exactly two real players and no CPU yet, a CPU auto-joins at start so
+  // voting works — tell the host so it isn't a surprise.
+  const willAddCpu = !needMore && players.filter((p) => !p.isBot).length === players.length && players.length === 2;
   app.innerHTML = `
     <div class="stack">
       <div class="logo">${esc(cfg.theme.logoText)}</div>
@@ -78,6 +81,7 @@ function renderLobby() {
       <button id="start" class="btn big" ${state.canStart ? '' : 'disabled'}>${esc(c.startButton)}</button>
       ${cfg.enableBots ? `<button id="addbot" class="btn ghost">+ add CPU player</button>` : ''}
       <div class="muted">${needMore ? esc(fill(c.needMore, { n: state.minPlayers })) : esc(c.readyToStart)}</div>
+      ${willAddCpu ? `<div class="muted" style="font-size:13px">▶ a CPU player will join so voting works with two of you</div>` : ''}
     </div>
   `;
   document.getElementById('start').onclick = () => net.send({ t: 'start' });

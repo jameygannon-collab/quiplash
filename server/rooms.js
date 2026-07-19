@@ -178,6 +178,12 @@ export class Room {
 
   start() {
     if (!this.canStart()) return;
+    // A game needs 3 players for voting to work (with 2, both write every
+    // matchup so neither can vote). Top up with CPU "house players" so a
+    // 2-person game always has a neutral voter.
+    while (this.activePlayers().length < 3 && this.activePlayers().length < rules.maxPlayers) {
+      this.addBot();
+    }
     metrics.gamesStarted += 1;
     for (const p of this.players.values()) p.score = 0;
     this.game = { roundIndex: -1, prompts: [], order: [], votingIndex: 0 };

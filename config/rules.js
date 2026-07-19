@@ -7,7 +7,11 @@
 
 export const rules = {
   // --- Player counts -------------------------------------------------------
-  minPlayers: 3,          // game can't start until this many have joined
+  minPlayers: 2,          // game can't start until this many have joined.
+  // With only 2 people, both write an answer to every matchup, so neither is
+  // allowed to vote (you can't vote on your own). To keep 2-player games
+  // playable, start() auto-adds a CPU "house player" so there's always a
+  // neutral voter — see server/rooms.js. Set to 3 for classic Quiplash.
   maxPlayers: 8,          // extra people become spectators (they can still watch)
 
   // --- Rounds --------------------------------------------------------------
