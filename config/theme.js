@@ -15,21 +15,21 @@ export const theme = {
   tagline: 'the truth is in the votes', // small line under the logo
 
   // --- Colors --------------------------------------------------------------
-  //  "Conspiracy corkboard": manila paper, typewriter ink, dried-red stamp.
-  brand: '#B0160B',            // primary accent — stamped red (dial to #EB1000 for hotter)
-  brandInk: '#f4ecd8',         // paper color that sits ON the red
-  bg: '#e4dcc4',               // page background (manila / aged paper)
-  bgPanel: '#efe8d4',          // cards / panels — a slightly lighter paper
-  ink: '#1c1710',              // main text color (near-black typewriter ink)
-  inkMuted: '#726a54',         // secondary/label text (faded pencil)
-  good: '#3f6b34',             // "you're in" / success (stamp green)
-  warn: '#9a5a00',             // low-timer / caution (aged amber)
+  //  "Redacted file at 3am": near-black paper, typewriter ink, highlighter yellow.
+  brand: '#FFD400',            // primary accent — highlighter yellow (the highlight)
+  brandInk: '#010101',         // near-black text that sits ON the yellow
+  bg: '#010101',               // page background (near-pure black)
+  bgPanel: '#141414',          // cards / panels — a hair lighter than the bg
+  ink: '#f2f0e6',              // main text color (warm off-white typewriter ink)
+  inkMuted: '#8f8a7a',         // secondary/label text (faded pencil)
+  good: '#3ad07a',             // "you're in" / success (green that reads on black)
+  warn: '#ff8c1a',             // low-timer / caution (orange, distinct from the yellow brand)
 
   // A pool of colors auto-assigned to players (one each, in order).
-  // Muted ink/stamp tones so chips read on the light paper background.
+  // Bright tones so chips read on the near-black background.
   playerColors: [
-    '#B0160B', '#2f4a6b', '#3f6b34', '#9a5a00',
-    '#5a3a6b', '#8a3a5a', '#2a5f62', '#a5502a',
+    '#FFD400', '#3d9bff', '#3ad07a', '#ff8c1a',
+    '#b06bff', '#ff6ba1', '#25d0d6', '#ff7a4d',
   ],
 
   // --- Type ----------------------------------------------------------------

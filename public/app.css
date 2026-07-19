@@ -27,10 +27,10 @@
 :root {
   /* Fallbacks; overwritten at runtime by applyTheme(). Kept in sync with
      config/theme.js so there's no dark flash before the theme applies. */
-  --brand: #B0160B; --brand-ink: #f4ecd8;
-  --bg: #e4dcc4; --bg-panel: #efe8d4;
-  --ink: #1c1710; --ink-muted: #726a54;
-  --good: #3f6b34; --warn: #9a5a00;
+  --brand: #FFD400; --brand-ink: #010101;
+  --bg: #010101; --bg-panel: #141414;
+  --ink: #f2f0e6; --ink-muted: #8f8a7a;
+  --good: #3ad07a; --warn: #ff8c1a;
   --font-display: 'Special Elite', 'Courier New', ui-monospace, monospace;
   --font-body: 'Courier Prime', ui-monospace, 'Courier New', monospace;
   --radius: 2px;
@@ -116,7 +116,7 @@ body {
 .chip {
   display: flex; align-items: center; gap: 10px;
   background: var(--bg-panel); padding: 10px 16px; border-radius: 2px;
-  border: 1px solid rgba(0,0,0,.12);
+  border: 1px solid rgba(255,255,255,.14);
   font-weight: 400; font-size: 18px;
 }
 .dot { width: 14px; height: 14px; border-radius: 50%; flex: none; }
